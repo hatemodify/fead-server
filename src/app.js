@@ -29,7 +29,7 @@ app.use(cors());
 app.use("/user", require("../routes/user"));
 app.use("/posts", require("../routes/post"));
 
-app.get("/news", (req, res) => {
+app.get("/", (req, res) => {
   console.log(req.headers);
   Promise.all([
     getNewsList(`business`),

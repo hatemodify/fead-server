@@ -6,10 +6,16 @@ const Post = require('../models/post');
 router.post('/', (req, res) => {
   const db = req.db;
   const title = req.body.title;
-  const description = req.body.description;
+  const tag = req.body.tag;
+  const author = req.body.author;
+  const content = req.body.content;
+  const thumb = req.body.thumb;
   const new_post = new Post({
-    title: title,
-    description: description
+    title,
+    author,
+    tag,
+    content,
+    thumb
   });
 
   new_post.save(error => {
@@ -21,60 +27,26 @@ router.post('/', (req, res) => {
   });
 });
 
-router.get('/posts:id', (req, res) => {
-  Post.find({}, 'title description', (err, posts) => {
-    if (err) {
-      console.log(err);
-    }
-    res.send({
-      posts: posts
-    });
-  });
-});
-
-router.put('/posts/:id', (req, res) => {
-  const db = req.db;
-  Post.findById(req.params.id, 'title description', function (error, post) {
-    if (error) {
-      console.error(error);
-    }
-
-    post.title = req.body.title
-    post.description = req.body.description
-    post.save(function (error) {
-      if (error) {
-        console.log(error)
+router.get('/:title', (req, res) => {
+  Post.findOne(
+    {
+      title: req.params.title
+    },
+    'title author tag content',
+    (err, posts) => {
+      if (err) {
+        console.log(err);
       }
+      console.log(posts);
       res.send({
-        success: true
+        posts
       });
-    });
-  });
+    }
+  );
 });
-
-
-
-/* router.post('/signup', (req, res) => {
-  const db = req.db;
-  const id = req.body.id;
-  const password = req.body.password;
-  const addUser = new User({
-    id: id,
-    password: password
-  });
-
-  addUser.save(error => {
-    error ? console.log(error) : null;
-    res.send({
-      success: true,
-      message: 'add user successfully'
-    });
-  });
-}); */
-
 
 router.get('/', (req, res) => {
-  Post.find({}, 'title description', (err, posts) => {
+  Post.find({}, 'title author createdDate content tag thumb', (err, posts) => {
     if (err) {
       console.log(err);
     }
